@@ -1,0 +1,36 @@
+root@ip-172-31-45-188:~/services/webserver# ls
+README.md  dbdata  docker-compose.yml  nginx  php  www
+root@ip-172-31-45-188:~/services/webserver# vi docker-compose.yml
+  ports:
+   - "80:80"
+   - "443:443"
+
+ php:
+  image: php:7.4-fpm
+  container_name: php
+  restart: always
+  networks:
+   - webserver
+  volumes:
+   - ./www:/var/www/html/
+   - ./php:/usr/local/etc/php/php.ini
+
+ db:
+  image: mysql:8
+  container_name: webserver_db
+  networks:
+   - webserver
+  restart: always
+  env_file:
+   - .env/db.env
+  ports:
+   - "3306:3306"
+  volumes:
+   - ./dbdata:/var/lib/mysql
+
+volumes:
+  dbdata:
+networks:
+  webserver:
+     driver: bridge
+
